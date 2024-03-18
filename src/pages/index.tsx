@@ -1,11 +1,118 @@
 import Head from "next/head";
-import Image from "next/image";
+// import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+
+import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
+
+// import styles from "@/styles/Home.module.css";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  mapboxgl.accessToken = 'pk.eyJ1IjoianVmcmVuY2giLCJhIjoiY2trZWthZzJmMDlheDJ0bzl5eXg3bHFpayJ9.-R3Wcdt92ev2Qul6_aZfww';
+  const [map, setMap] = useState<mapboxgl.Map | null>(null);
+
+  useEffect(() => {
+    if (map === null) {
+      setMap(new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/jufrench/cltvtd3g700zj01pb2vnx0q42',
+        center: [-94.57797241210938, 39.099761962890625],
+        zoom: 2
+      }));
+    }
+  })
+
+  if (map)  {
+    const usa = new mapboxgl.Marker({ color: '#fcc200'})
+      .setLngLat([-94.57797241210938, 39.099761962890625])
+      .addTo(map);
+  
+    const france = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([1.8883335, 46.603354])
+        .addTo(map);
+  
+    const englad = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-1.2649062, 52.5310214])
+        .addTo(map);
+  
+    const italy = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([12.674297, 42.6384261])
+        .addTo(map);
+  
+    const austria = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([14.12456, 47.59397])
+        .addTo(map);
+  
+    const czechia = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([15.3381061, 49.7439047])
+        .addTo(map);
+  
+    const hungary = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([19.5060937, 47.1817585])
+        .addTo(map);
+  
+    const portugal = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-8.1353519, 39.6621648])
+        .addTo(map);
+  
+    const germany = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([10.4478313, 51.1638175])
+        .addTo(map);
+  
+    const brazil = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-53.2, -10.3333333])
+        .addTo(map);
+  
+    const colombia = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-72.9088133, 4.099917])
+        .addTo(map);
+  
+    const puertorico = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-66.4858295, 18.2247706])
+        .addTo(map);
+  
+    const nepal = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([83.9999901, 28.3780464])
+        .addTo(map);
+  
+    const qatar = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([51.2295295, 25.3336984])
+        .addTo(map);
+  
+    const mexico = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-102.0077097, 23.6585116])
+        .addTo(map);
+  
+    const spain = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-4.8379791, 39.3260685])
+        .addTo(map);
+  
+    const chile = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-71.3187697, -31.7613365])
+        .addTo(map);
+  
+    const costarica = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-84.0739102, 10.2735633])
+        .addTo(map);
+  
+    const canada = new mapboxgl.Marker({ color: '#fcc200'})
+        .setLngLat([-107.991707, 61.0666922])
+        .addTo(map);
+  
+    // document.getElementById('fly').addEventListener('click', () => {
+    //   console.log('flying')
+    //     map.flyTo({
+    //         center: [-94.57797241210938, 39.099761962890625],
+    //         zoom: 5,
+    //         essential: true
+    //     });
+    // });
+  }
+
+
   return (
     <>
       <Head>
@@ -14,101 +121,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{" "}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+      {/* <main className={`${styles.main} ${inter.className}`}> */}
+        <div id="map" style={{
+          position: "absolute", top: 0, bottom: 0, width: "100%"
+        }}></div>
+      {/* </main> */}
     </>
   );
 }

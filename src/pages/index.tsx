@@ -5,10 +5,22 @@ import { Inter } from "next/font/google";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 
-// import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
 
+import { useDisclosure } from '@mantine/hooks';
+import { Drawer, Box, ActionIcon } from '@mantine/core';
+import { IconLayoutSidebarLeftExpandFilled } from '@tabler/icons-react';
+
 const inter = Inter({ subsets: ["latin"] });
+
+function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void }) {
+  // const [opened, { open, close }] = useDisclosure(false);
+  return (
+    <Drawer opened={props.opened} onClose={props.handleCloseDrawer} offset={15} style={{opacity: 0.9,}}>
+      <Box style={{border: "2px solid limegreen"}}>I'm the drawer</Box>
+    </Drawer>
+  )
+}
 
 export default function Home() {
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
@@ -111,7 +123,16 @@ export default function Home() {
     //     });
     // });
   }
+  const [opened, { open, close }] = useDisclosure(false);
 
+  const handleOpenDrawer = () => {
+    open();
+  }
+
+  const handleCloseDrawer = () => {
+    close();
+    console.log('closed')
+  }
 
   return (
     <>
@@ -122,10 +143,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <main className={`${styles.main} ${inter.className}`}> */}
-        <div id="map" style={{
-          position: "absolute", top: 0, bottom: 0, width: "100%"
-        }}></div>
-      {/* </main> */}
+      <main className={`${inter.className}`}>
+        <div id="map" style={{position: "absolute", top: 0, bottom: 0, width: "100%"}}></div>
+        <ActionIcon color="teal" onClick={open} style={{position: "absolute", top: "10px", left: "10px"}}>
+          <IconLayoutSidebarLeftExpandFilled />
+        </ActionIcon>
+        <MapDrawer opened={opened} handleOpenDrawer={handleOpenDrawer} handleCloseDrawer={handleCloseDrawer} />
+      </main>
     </>
   );
 }

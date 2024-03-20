@@ -8,16 +8,28 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
-import { Drawer, Box, ActionIcon } from '@mantine/core';
 import { IconMenu2 } from '@tabler/icons-react';
+import { Drawer, Box, ActionIcon, Menu, Button, Autocomplete, Transition, Divider } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
 function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void }) {
   // const [opened, { open, close }] = useDisclosure(false);
   return (
-    <Drawer opened={props.opened} onClose={props.handleCloseDrawer} offset={15} style={{opacity: 0.9,}}>
-      <Box style={{border: "2px solid limegreen"}}>I'm the drawer</Box>
+    <Drawer
+      title="Mai Globo"
+      size="xs"
+      offset={15}
+      withOverlay={false}
+      styles={{content: {background: "rgba(255,255,255,0.5)", border: "3px solid rgba(255,255,255,0.5)"}}}
+      transitionProps={{ transition: 'scale-y'}}
+      opened={props.opened}
+      onClose={props.handleCloseDrawer}>
+      <Box mt="4">
+        <Autocomplete label="Search All Countries" placeholder="Start typing" data={['Colombia', 'Brazil', 'Italy']} />
+        <Divider my="xs" />
+        List here...
+      </Box>
     </Drawer>
   )
 }
@@ -149,6 +161,23 @@ export default function Home() {
           <IconMenu2 />
         </ActionIcon>
         <MapDrawer opened={opened} handleOpenDrawer={handleOpenDrawer} handleCloseDrawer={handleCloseDrawer} />
+        {/* <Menu>
+          <Menu.Target>
+            <Button>Toggle menu</Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Label>Search Your Countries</Menu.Label>
+            <Menu.Item closeMenuOnClick={false}>
+              <Autocomplete placeholder="Search" data={['Colombia', 'Brazil', 'Italy']} />
+            </Menu.Item>
+            <Menu.Item>
+              Item 1
+            </Menu.Item>
+            <Menu.Item>
+              Item 1
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu> */}
       </main>
     </>
   );

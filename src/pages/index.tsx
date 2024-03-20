@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  mapboxgl.accessToken = process.env.mapboxAccessToken || '';
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
 
   useEffect(() => {

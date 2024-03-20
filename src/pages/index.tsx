@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
 import { Drawer, Box, ActionIcon } from '@mantine/core';
-import { IconLayoutSidebarLeftExpandFilled } from '@tabler/icons-react';
+import { IconMenu2 } from '@tabler/icons-react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -146,7 +146,7 @@ export default function Home() {
       <main className={`${inter.className}`}>
         <div id="map" style={{position: "absolute", top: 0, bottom: 0, width: "100%"}}></div>
         <ActionIcon color="teal" onClick={open} style={{position: "absolute", top: "10px", left: "10px"}}>
-          <IconLayoutSidebarLeftExpandFilled />
+          <IconMenu2 />
         </ActionIcon>
         <MapDrawer opened={opened} handleOpenDrawer={handleOpenDrawer} handleCloseDrawer={handleCloseDrawer} />
       </main>

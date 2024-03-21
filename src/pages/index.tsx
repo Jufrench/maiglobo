@@ -13,17 +13,27 @@ import { Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete, Nativ
 
 const inter = Inter({ subsets: ["latin"] });
 
+type Country = {
+  name: {
+    common: string;
+  },
+  flag: string,
+  flags: {
+    png: string;
+    svg: string;
+  }
+}
 function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void }) {
   // const [opened, { open, close }] = useDisclosure(false);
   const [myTravels, setMyTravels] = useState<string[]>([]);
-  const [allCountries, setAllCountries] = useState<string[]>([]);
+  const [allCountries, setAllCountries] = useState<{}[]>([]);
   const [hasFetched, setHasFetched] = useState<boolean>(false);
 
   const handleFetchAllCountries = () => {
     fetch('https://restcountries.com/v3.1/all')
       .then(response => response.json())
       .then(data => {
-        setAllCountries(data.map((country: any) => country.name.common));
+        setAllCountries(data);
       })
   };
 
@@ -50,7 +60,16 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
         }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
         {allCountries.length > 0 &&
           <List>
-            {allCountries.map((country, index) => <List.Item key={index}>{country}</List.Item>)}
+            {allCountries.map((country, index) => (
+              <List.Item key={index}
+              //   icon={
+              //     <Image src={}
+              //       alt={country}
+              //       width={24}
+              //       height={24} />
+              // }
+              >{(country as Country).name.common}</List.Item>)
+            )}
           </List>
         }
       </Stack>

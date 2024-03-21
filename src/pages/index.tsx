@@ -9,12 +9,26 @@ import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2 } from '@tabler/icons-react';
-import { Drawer, Box, ActionIcon, Menu, Button, Autocomplete, Transition, Divider } from '@mantine/core';
+import { Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete, NativeSelect, Transition, Divider } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
 function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void }) {
   // const [opened, { open, close }] = useDisclosure(false);
+  const [myTravels, setMyTravels] = useState<string[]>([]);
+  const [allCountries, setAllCountries] = useState<string[]>([]);
+  const [hasFetched, setHasFetched] = useState<boolean>(false);
+
+  const handleFetchAllCountries = () => {
+    fetch('https://restcountries.com/v3.1/all')
+      .then(response => response.json())
+      .then(data => {
+        setAllCountries(data.map((country: any) => country.name.common));
+      })
+  };
+
+  console.log('%callCountries', 'color: #f00', allCountries)
+
   return (
     <Drawer
       title="Mai Globo"
@@ -25,11 +39,21 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
       transitionProps={{ transition: 'scale-y'}}
       opened={props.opened}
       onClose={props.handleCloseDrawer}>
-      <Box mt="4">
-        <Autocomplete label="Search All Countries" placeholder="Start typing" data={['Colombia', 'Brazil', 'Italy']} />
-        <Divider my="xs" />
-        List here...
-      </Box>
+      <Stack gap="sm">
+        {/* <Divider my="xs" /> */}
+        <NativeSelect label="Country Data Category" data={["My Travels", "All Countries"]} />
+        {/* <NativeSelect label="Category Field" data={["My Data", "REST Countries"]} /> */}
+        <Autocomplete placeholder="Search for a country or region" data={['Colombia', 'Brazil', 'Italy']} />
+        <Button size="xs" onClick={() => {
+          setHasFetched(true);
+          handleFetchAllCountries();
+        }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
+        {allCountries.length > 0 &&
+          <List>
+            {allCountries.map((country, index) => <List.Item key={index}>{country}</List.Item>)}
+          </List>
+        }
+      </Stack>
     </Drawer>
   )
 }

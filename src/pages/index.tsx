@@ -8,8 +8,8 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
-import { IconMenu2, IconArrowBigRightLine } from '@tabler/icons-react';
-import { Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete,
+import { IconMenu2, IconArrowBigRightLine, IconSearch, IconX } from '@tabler/icons-react';
+import { rem, Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete,
           NativeSelect,Transition, Divider, Group, Text, ThemeIcon, Accordion } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -52,13 +52,13 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
       onClose={props.handleCloseDrawer}>
       <Stack gap="sm">
         {/* <Divider my="xs" /> */}
-        <NativeSelect label="Country Data Category" data={["My Travels", "All Countries"]} />
+        {/* <NativeSelect label="Country Data Category" data={["My Travels", "All Countries"]} /> */}
         {/* <NativeSelect label="Category Field" data={["My Data", "REST Countries"]} /> */}
-        <Autocomplete placeholder="Search for a country or region" data={['Colombia', 'Brazil', 'Italy']} />
-        <Button size="xs" onClick={() => {
-          setHasFetched(true);
-          handleFetchAllCountries();
-        }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
+        <Autocomplete
+          leftSectionPointerEvents="none"
+          leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} />}
+          rightSection={<IconX onClick={() => console.log('clicked search')} style={{ width: rem(16), height: rem(16) }} />}
+          placeholder="Search (suggestion: country)" data={['Colombia', 'Brazil', 'Italy', 'Nigeria']} />
         <Accordion
           itemType=""
           styles={{
@@ -71,6 +71,10 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
           <Accordion.Item value="All Countries">
             <Accordion.Control>All Countries</Accordion.Control>
             <Accordion.Panel>
+            <Button size="xs" onClick={() => {
+              setHasFetched(true);
+              handleFetchAllCountries();
+            }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
               <NativeSelect size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} style={{marginBottom: "6px"}}/>
               {allCountries.length > 0 &&
                 <Stack>

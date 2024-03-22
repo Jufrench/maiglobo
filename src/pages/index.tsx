@@ -8,8 +8,9 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
-import { IconMenu2 } from '@tabler/icons-react';
-import { Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete, NativeSelect, Transition, Divider } from '@mantine/core';
+import { IconMenu2, IconArrowBigRightLine } from '@tabler/icons-react';
+import { Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete,
+          NativeSelect,Transition, Divider, Group, Text, ThemeIcon, Accordion } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +38,7 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
       })
   };
 
-  console.log('%callCountries', 'color: #f00', allCountries)
+  // console.log('%callCountries', 'color: #f00', allCountries)
 
   return (
     <Drawer
@@ -58,20 +59,34 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
           setHasFetched(true);
           handleFetchAllCountries();
         }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
-        {allCountries.length > 0 &&
-          <List>
-            {allCountries.map((country, index) => (
-              <List.Item key={index}
-              //   icon={
-              //     <Image src={}
-              //       alt={country}
-              //       width={24}
-              //       height={24} />
-              // }
-              >{(country as Country).name.common}</List.Item>)
-            )}
-          </List>
-        }
+        <Accordion
+          itemType=""
+          styles={{
+            label: { padding: "2px"  }
+          }}>
+          <Accordion.Item value="My Travels">
+          <Accordion.Control>My Travels</Accordion.Control>
+          </Accordion.Item>
+
+          <Accordion.Item value="All Countries">
+            <Accordion.Control>All Countries</Accordion.Control>
+            <Accordion.Panel>
+              <NativeSelect size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} style={{marginBottom: "6px"}}/>
+              {allCountries.length > 0 &&
+                <Stack>
+                  {allCountries.map((country, index) => (
+                    <Group
+                      key={index}
+                      justify="space-between"
+                      style={{border: '1px solid tomato'}}>
+                        <Text span>{(country as Country).name.common}</Text>
+                        <ActionIcon onClick={() => console.log('hello')}><IconArrowBigRightLine /></ActionIcon>
+                    </Group>
+                  ))}
+                </Stack>}
+              </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
       </Stack>
     </Drawer>
   )

@@ -71,11 +71,19 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
           <Accordion.Item value="All Countries">
             <Accordion.Control>All Countries</Accordion.Control>
             <Accordion.Panel>
-            <Button size="xs" onClick={() => {
-              setHasFetched(true);
-              handleFetchAllCountries();
-            }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
-              <NativeSelect size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} style={{marginBottom: "6px"}}/>
+              <Stack>
+                <Button size="xs" onClick={() => {
+                  setHasFetched(true);
+                  handleFetchAllCountries();
+                }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
+                <NativeSelect
+                  style={{
+                    marginBottom: "6px",
+                    display: 'flex',
+                    alignItems: 'center'}}
+                  styles={{wrapper: {flexGrow: 1, marginLeft: "6px"}}}
+                  size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} />
+              </Stack>
               {allCountries.length > 0 &&
                 <Stack>
                   {allCountries.map((country, index) => (

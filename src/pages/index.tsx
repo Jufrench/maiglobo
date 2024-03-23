@@ -22,9 +22,10 @@ type Country = {
   flags: {
     png: string;
     svg: string;
-  }
+  },
+  latlng: number[];
 }
-function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void }) {
+function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handleCloseDrawer: () => void, handleFlyTo: (lnglat: number[]) => void}) {
   // const [opened, { open, close }] = useDisclosure(false);
   const [myTravels, setMyTravels] = useState<string[]>([]);
   const [allCountries, setAllCountries] = useState<{}[]>([]);
@@ -33,12 +34,9 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
   const handleFetchAllCountries = () => {
     fetch('https://restcountries.com/v3.1/all')
       .then(response => response.json())
-      .then(data => {
-        setAllCountries(data);
-      })
+      .then((data: any) => setAllCountries(data))
+      .catch(error => console.error(error));
   };
-
-  // console.log('%callCountries', 'color: #f00', allCountries)
 
   return (
     <Drawer
@@ -92,7 +90,15 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                         justify="space-between"
                         style={{background: 'rgba(0, 0, 0, 0.7)', padding: rem(6)}}>
                           <Text style={{ color: '#fff', fontWeight: 700}} span>{(country as Country).name.common}</Text>
-                          <ActionIcon color="teal" variant="transparent" onClick={() => console.log('hello')}><IconArrowBigRightFilled /></ActionIcon>
+                          <ActionIcon
+                            color="teal"
+                            variant="transparent"
+                            onClick={() => {
+                              console.log('longlat:', (country as Country).latlng[1], (country as Country).latlng[0])
+                              props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
+                            }}>
+                            <IconArrowBigRightFilled />
+                          </ActionIcon>
                       </Group>
                     ))}
                   </Stack>}
@@ -119,6 +125,18 @@ export default function Home() {
       }));
     }
   })
+
+  const handleFlyTo = (lnglat: number[]) => {
+    const [lng, lat] = lnglat;
+    
+    if (map && lnglat.length > 0) {
+      map.flyTo({
+          center: [lng, lat],
+          zoom: 8,
+          essential: true
+      });
+    }
+  }
 
   if (map)  {
     const usa = new mapboxgl.Marker({ color: '#fcc200'})
@@ -214,7 +232,6 @@ export default function Home() {
 
   const handleCloseDrawer = () => {
     close();
-    console.log('closed')
   }
 
   return (
@@ -226,12 +243,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <main className={`${styles.main} ${inter.className}`}> */}
+      <div id="map" style={{position: "absolute", top: 0, bottom: 0, width: "100%"}}></div>
       <main className={`${inter.className}`}>
-        <div id="map" style={{position: "absolute", top: 0, bottom: 0, width: "100%"}}></div>
         <ActionIcon color="teal" onClick={open} style={{position: "absolute", top: "10px", left: "10px"}}>
           <IconMenu2 />
         </ActionIcon>
-        <MapDrawer opened={opened} handleOpenDrawer={handleOpenDrawer} handleCloseDrawer={handleCloseDrawer} />
+        <MapDrawer opened={opened} handleOpenDrawer={handleOpenDrawer} handleCloseDrawer={handleCloseDrawer} handleFlyTo={handleFlyTo} />
         {/* <Menu>
           <Menu.Target>
             <Button>Toggle menu</Button>

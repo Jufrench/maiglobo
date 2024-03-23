@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2, IconArrowBigRightLine, IconSearch, IconX, IconArrowBigRight, IconArrowBigRightFilled } from '@tabler/icons-react';
-import { rem, Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete,
-          NativeSelect,Transition, Divider, Group, Text, ThemeIcon, Accordion, lighten } from '@mantine/core';
+import { rem, Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete, ComboboxItem, OptionsFilter,
+          NativeSelect, Transition, Divider, Group, Text, ThemeIcon, Accordion, lighten } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,13 +30,44 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
   const [myTravels, setMyTravels] = useState<string[]>([]);
   const [allCountries, setAllCountries] = useState<{}[]>([]);
   const [hasFetched, setHasFetched] = useState<boolean>(false);
+  const [loading, { toggle }] = useDisclosure();
+  const [allCountriesStrings, setAllCountriesStrings] = useState<string[]>([]);
+  const [autocompleteValue, setAutocompleteValue] = useState('');
 
   const handleFetchAllCountries = () => {
     fetch('https://restcountries.com/v3.1/all')
       .then(response => response.json())
-      .then((data: any) => setAllCountries(data))
+      .then((data: any) => {
+        setAllCountries(data);
+        return data;
+      })
+      .then((data: any) => {
+        console.log('data:', data)
+        const countriesStrings = data.map((country: Country) => country.name.common);
+        setAllCountriesStrings(countriesStrings);
+      })
       .catch(error => console.error(error));
   };
+
+  useEffect(() => {
+    if (allCountries.length > 0) {
+      toggle();
+    }
+  }, [allCountries]);
+
+  const optionsFilter: OptionsFilter = ({ options, search }) => {
+    const splittedSearch = search.toLowerCase().trim().split(' ');
+    return (options as ComboboxItem[]).filter((option) => {
+      const words = option.label.toLowerCase().trim().split(' ');
+      return splittedSearch.every((searchWord) => words.some((word) => word.includes(searchWord)));
+    });
+  };
+
+  const allCountriesFiltered = allCountries.filter(country => {
+    return (country as Country).name.common.toLowerCase().includes(autocompleteValue);
+  });
+
+  console.log('%callCountriesStrings:', 'color:tomato', allCountriesStrings)
 
   return (
     <Drawer
@@ -52,13 +83,14 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
         {/* <Divider my="xs" /> */}
         {/* <NativeSelect label="Country Data Category" data={["My Travels", "All Countries"]} /> */}
         {/* <NativeSelect label="Category Field" data={["My Data", "REST Countries"]} /> */}
-        <Autocomplete
+        {/* <Autocomplete
           leftSectionPointerEvents="none"
           leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} />}
           rightSection={<IconX onClick={() => console.log('clicked search')} style={{ width: rem(16), height: rem(16) }} />}
-          placeholder="Search (suggestion: country)" data={['Colombia', 'Brazil', 'Italy', 'Nigeria']} />
+          placeholder="Search (suggestion: country)" data={['Colombia', 'Brazil', 'Italy', 'Nigeria']} /> */}
         <Accordion
           itemType=""
+          defaultValue="All Countries"
           styles={{
             label: { padding: "2px"  }
           }}>
@@ -72,9 +104,10 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
             // styles={{content: {padding: rem(10)}}}
             >
               <Stack>
-                <Button size="xs" onClick={() => {
+                <Button loading={loading} size="xs" onClick={() => {
                   setHasFetched(true);
                   handleFetchAllCountries();
+                  toggle();
                 }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
                 <NativeSelect
                   style={{
@@ -82,9 +115,40 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                     alignItems: 'center'}}
                   styles={{wrapper: {flexGrow: 1, marginLeft: "6px"}}}
                   size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} />
+                <Autocomplete
+                  placeholder="Filter"
+                  leftSectionPointerEvents="none"
+                  value={autocompleteValue}
+                  // data={allCountriesStrings}
+                  filter={optionsFilter}
+                  leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} />}
+                  rightSection={<IconX onClick={() => setAutocompleteValue('')} style={{ cursor: 'pointer', width: rem(16), height: rem(16) }} />}
+                  onChange={(value: string) => {
+                    setAutocompleteValue(value)
+                  }}/>
                 {allCountries.length > 0 &&
+                  // <Stack>
+                  //   {allCountries.map((country, index) => (
+                  //     <Group
+                  //       key={index}
+                  //       justify="space-between"
+                  //       style={{background: 'rgba(0, 0, 0, 0.7)', padding: rem(6)}}>
+                  //         <Text style={{ color: '#fff', fontWeight: 700}} span>{(country as Country).name.common}</Text>
+                  //         <ActionIcon
+                  //           color="teal"
+                  //           variant="transparent"
+                  //           onClick={() => {
+                  //             console.log('longlat:', (country as Country).latlng[1], (country as Country).latlng[0])
+                  //             props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
+                  //             props.handleCloseDrawer();
+                  //           }}>
+                  //           <IconArrowBigRightFilled />
+                  //         </ActionIcon>
+                  //     </Group>
+                  //   ))}
+                  // </Stack>}
                   <Stack>
-                    {allCountries.map((country, index) => (
+                    {allCountriesFiltered.map((country, index) => (
                       <Group
                         key={index}
                         justify="space-between"
@@ -96,6 +160,7 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                             onClick={() => {
                               console.log('longlat:', (country as Country).latlng[1], (country as Country).latlng[0])
                               props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
+                              props.handleCloseDrawer();
                             }}>
                             <IconArrowBigRightFilled />
                           </ActionIcon>
@@ -132,7 +197,7 @@ export default function Home() {
     if (map && lnglat.length > 0) {
       map.flyTo({
           center: [lng, lat],
-          zoom: 6,
+          zoom: 3,
           essential: true
       });
     }

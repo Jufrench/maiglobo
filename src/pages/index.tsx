@@ -55,13 +55,13 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
     }
   }, [allCountries]);
 
-  const optionsFilter: OptionsFilter = ({ options, search }) => {
-    const splittedSearch = search.toLowerCase().trim().split(' ');
-    return (options as ComboboxItem[]).filter((option) => {
-      const words = option.label.toLowerCase().trim().split(' ');
-      return splittedSearch.every((searchWord) => words.some((word) => word.includes(searchWord)));
-    });
-  };
+  // const optionsFilter: OptionsFilter = ({ options, search }) => {
+  //   const splittedSearch = search.toLowerCase().trim().split(' ');
+  //   return (options as ComboboxItem[]).filter((option) => {
+  //     const words = option.label.toLowerCase().trim().split(' ');
+  //     return splittedSearch.every((searchWord) => words.some((word) => word.includes(searchWord)));
+  //   });
+  // };
 
   const allCountriesFiltered = allCountries.filter(country => {
     return (country as Country).name.common.toLowerCase().includes(autocompleteValue);
@@ -120,7 +120,7 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                   leftSectionPointerEvents="none"
                   value={autocompleteValue}
                   // data={allCountriesStrings}
-                  filter={optionsFilter}
+                  // filter={optionsFilter}
                   leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} />}
                   rightSection={<IconX onClick={() => setAutocompleteValue('')} style={{ cursor: 'pointer', width: rem(16), height: rem(16) }} />}
                   onChange={(value: string) => {

@@ -8,9 +8,9 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useState } from "react";
 
 import { useDisclosure } from '@mantine/hooks';
-import { IconMenu2, IconArrowBigRightLine, IconSearch, IconX } from '@tabler/icons-react';
+import { IconMenu2, IconArrowBigRightLine, IconSearch, IconX, IconArrowBigRight, IconArrowBigRightFilled } from '@tabler/icons-react';
 import { rem, Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete,
-          NativeSelect,Transition, Divider, Group, Text, ThemeIcon, Accordion } from '@mantine/core';
+          NativeSelect,Transition, Divider, Group, Text, ThemeIcon, Accordion, lighten } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,7 +70,9 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
 
           <Accordion.Item value="All Countries">
             <Accordion.Control>All Countries</Accordion.Control>
-            <Accordion.Panel>
+            <Accordion.Panel
+            // styles={{content: {padding: rem(10)}}}
+            >
               <Stack>
                 <Button size="xs" onClick={() => {
                   setHasFetched(true);
@@ -78,24 +80,23 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                 }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
                 <NativeSelect
                   style={{
-                    marginBottom: "6px",
                     display: 'flex',
                     alignItems: 'center'}}
                   styles={{wrapper: {flexGrow: 1, marginLeft: "6px"}}}
                   size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} />
+                {allCountries.length > 0 &&
+                  <Stack>
+                    {allCountries.map((country, index) => (
+                      <Group
+                        key={index}
+                        justify="space-between"
+                        style={{background: 'rgba(0, 0, 0, 0.7)', padding: rem(6)}}>
+                          <Text style={{ color: '#fff', fontWeight: 700}} span>{(country as Country).name.common}</Text>
+                          <ActionIcon color="teal" variant="transparent" onClick={() => console.log('hello')}><IconArrowBigRightFilled /></ActionIcon>
+                      </Group>
+                    ))}
+                  </Stack>}
               </Stack>
-              {allCountries.length > 0 &&
-                <Stack>
-                  {allCountries.map((country, index) => (
-                    <Group
-                      key={index}
-                      justify="space-between"
-                      style={{border: '1px solid tomato'}}>
-                        <Text span>{(country as Country).name.common}</Text>
-                        <ActionIcon onClick={() => console.log('hello')}><IconArrowBigRightLine /></ActionIcon>
-                    </Group>
-                  ))}
-                </Stack>}
               </Accordion.Panel>
           </Accordion.Item>
         </Accordion>

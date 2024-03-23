@@ -132,7 +132,7 @@ export default function Home() {
     if (map && lnglat.length > 0) {
       map.flyTo({
           center: [lng, lat],
-          zoom: 8,
+          zoom: 6,
           essential: true
       });
     }

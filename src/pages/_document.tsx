@@ -4,7 +4,7 @@ export default function Document() {
   // Mozilla-based browsers will ignore this.
   const webkitStyle = {height: "-webkit-fill-available"};
   // WebKit-based browsers will ignore this.
-  const mozillaStyle = {height: "-webkit-fill-available"};
+  const mozillaStyle = {height: "-moz-available"};
 
   
 
@@ -20,7 +20,14 @@ export default function Document() {
         //   maxHeight: "-webkit-fill-available",
         //   // height: "fill-available"
         // }}
-        style={{...webkitStyle, ...mozillaStyle}}
+        // style={{
+        //   ...webkitStyle,
+        //   ...mozillaStyle,
+        //   // position: "relative",
+        // }}
+        style={{
+          height: "100dvh",
+        }}
         >
         <Main />
         <NextScript />

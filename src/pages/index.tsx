@@ -10,7 +10,7 @@ import { CSSProperties, useEffect, useState } from "react";
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2, IconArrowBigRightLine, IconSearch, IconX, IconArrowBigRight, IconArrowBigRightFilled } from '@tabler/icons-react';
 import { rem, Drawer, Stack, Box, List, ActionIcon, Menu, Button, Autocomplete, ComboboxItem, OptionsFilter,
-          NativeSelect, Transition, Divider, Group, Text, ThemeIcon, Accordion, lighten } from '@mantine/core';
+          NativeSelect, Avatar, Transition, Divider, Group, Text, ThemeIcon, Accordion, lighten, rgba } from '@mantine/core';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -76,6 +76,7 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
     // }
     return (country as Country).name.common.toLowerCase().includes(autocompleteValue.toLowerCase());
   });
+  console.log('allCountriesFiltered:', allCountriesFiltered)
 
   return (
     <Drawer
@@ -83,7 +84,7 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
       size="xs"
       offset={15}
       withOverlay={false}
-      styles={{content: {background: "rgba(255,255,255,0.5)", border: "3px solid rgba(255,255,255,0.5)"}}}
+      styles={{content: {background: rgba('#868e96', 0.9)}}}
       transitionProps={{ transition: 'scale-y'}}
       opened={props.opened}
       onClose={props.handleCloseDrawer}>
@@ -118,11 +119,14 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                   toggle();
                 }}>{hasFetched ? 'Refresh List' : 'Fetch All Countries'}</Button>
                 <NativeSelect
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center'}}
-                  styles={{wrapper: {flexGrow: 1, marginLeft: "6px"}}}
-                  size="xs" label="Sort by:" data={["Continent", "Population", "Language"]} />
+                  leftSection={
+                    <Text span
+                      style={{fontSize: rem(14), color: lighten("#000", 0.2), marginLeft: rem(2)}}>
+                      Sort:
+                    </Text>}
+                  leftSectionPointerEvents="none"
+                  styles={{wrapper: {flexGrow: 1}, input: {paddingLeft: rem(40)}, section: { marginLeft: rem(4)}}}
+                  size="sm" data={["Continent", "Population", "Language"]} />
                 <Autocomplete
                   placeholder="Filter"
                   leftSectionPointerEvents="none"
@@ -157,22 +161,37 @@ function MapDrawer(props: { opened: boolean, handleOpenDrawer: () => void, handl
                   // </Stack>}
                   <Stack>
                     {allCountriesFiltered.map((country, index) => (
-                      <Group
-                        key={index}
-                        justify="space-between"
-                        style={{background: 'rgba(0, 0, 0, 0.7)', padding: rem(6)}}>
-                          <Text style={{ color: '#fff', fontWeight: 700}} span>{(country as Country).name.common}</Text>
-                          <ActionIcon
-                            color="teal"
-                            variant="transparent"
-                            onClick={() => {
-                              // console.log('longlat:', (country as Country).latlng[1], (country as Country).latlng[0])
-                              props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
-                              props.handleCloseDrawer();
-                            }}>
-                            <IconArrowBigRightFilled />
-                          </ActionIcon>
-                      </Group>
+                      // <Group
+                      //   key={index}
+                      //   justify="space-between"
+                      //   style={{padding: rem(6)}}>
+                      //     <Text style={{
+                      //       // color: '#fff',
+                      //       fontWeight: 700
+                      //       }} span>{(country as Country).name.common}</Text>
+                      //     <ActionIcon
+                      //       color="teal"
+                      //       variant="transparent"
+                      //       onClick={() => {
+                      //         props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
+                      //         props.handleCloseDrawer();
+                      //       }}>
+                      //       <IconArrowBigRightFilled />
+                      //     </ActionIcon>
+                      // </Group>
+                      <Button
+                        styles={{inner: {display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}}
+                        color="white"
+                        variant="light"
+                        size="lg"
+                        leftSection={<Avatar radius="sm" src={(country as Country).flags.png} size={20} />}
+                        rightSection={<IconArrowBigRightFilled size={20} />}
+                        onClick={() => {
+                          props.handleFlyTo([(country as Country).latlng[1], (country as Country).latlng[0]])
+                        }}
+                      >
+                        {(country as Country).name.common}
+                      </Button>
                     ))}
                   </Stack>}
               </Stack>
@@ -297,7 +316,7 @@ export default function Home() {
     //     });
     // });
   }
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(true);
 
   const handleOpenDrawer = () => {
     open();

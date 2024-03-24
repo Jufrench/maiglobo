@@ -205,7 +205,7 @@ export default function Home() {
     if (map && lnglat.length > 0) {
       map.flyTo({
           center: [lng, lat],
-          zoom: 3,
+          zoom: 5,
           essential: true
       });
     }
